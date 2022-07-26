@@ -14,9 +14,9 @@ class Country {
   @JsonKey(name: 'currency')
   final String? Currency;
   @JsonKey(name: 'latitude')
-  final double? Latitude;
+  var Latitude;
   @JsonKey(name: 'longitude')
-  final double? Longitude;
+  var Longitude;
   @JsonKey(name: 'phone_code')
   final int? PhoneCode;
 

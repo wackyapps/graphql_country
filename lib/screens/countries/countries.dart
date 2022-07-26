@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maqqi/model/country/country.dart';
 import 'package:maqqi/provider/country_provider/country_provider.dart';
 import 'package:maqqi/screens/countries/country_form.dart';
+import 'package:maqqi/screens/countries/updateCountries.dart';
 import 'package:provider/provider.dart';
 
 class CountriesList extends StatelessWidget {
@@ -9,27 +10,40 @@ class CountriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // call provider to get the countries list
+    final countriesModel = Provider.of<CountryProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: const Text("Countries"),
       ),
       body: ListView.builder(
-        itemCount: Provider.of<CountryProvider>(context, listen: true)
-            .countries
-            .length,
+        itemCount: countriesModel.countries.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: const Text("Country Name, Capital, Currency"),
-            subtitle: const Text("Phone Code, Latitude, Longitude"),
-            leading: IconButton(
-              icon: const Icon(Icons.delete_forever, color: Colors.red),
-              onPressed: () {
-                // alert dialog
-                showDeleteDialog(context, index);
-              },
-            ),
-          );
+          return Consumer<CountryProvider>(builder: (context, model, child) {
+            return ListTile(
+              title: Text(
+                  ", ${model.countries[index].Capital}, ${model.countries[index].Currency}"),
+              subtitle: Text(
+                  "${model.countries[index].PhoneCode} ${model.countries[index].Longitude}, ${model.countries[index].Latitude}"),
+              leading: IconButton(
+                icon: const Icon(Icons.delete_forever, color: Colors.red),
+                onPressed: () {
+                  // alert dialog
+                  showDeleteDialog(context, index);
+                },
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: () {
+                  // show updation country form
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const updateCountry();
+                  }));
+                },
+              ),
+            );
+          });
         },
       ),
       floatingActionButton: FloatingActionButton(

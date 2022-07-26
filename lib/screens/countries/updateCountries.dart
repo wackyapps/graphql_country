@@ -4,19 +4,20 @@ import 'package:maqqi/model/country/country.dart';
 import 'package:maqqi/provider/country_provider/country_provider.dart';
 import 'package:provider/provider.dart';
 
-class CountryForm extends StatefulWidget {
-  const CountryForm({Key? key}) : super(key: key);
+class updateCountry extends StatefulWidget {
+  const updateCountry({Key? key}) : super(key: key);
   @override
-  _CountryFormState createState() => _CountryFormState();
+  _updateCountryState createState() => _updateCountryState();
 }
 
-class _CountryFormState extends State<CountryForm> {
+class _updateCountryState extends State<updateCountry> {
   final TextStyle textstyle =
       const TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
 // global key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  // id controller
+  final TextEditingController _id = TextEditingController();
   // name controller
   final TextEditingController _nameController = TextEditingController();
   // capital controller
@@ -37,7 +38,7 @@ class _CountryFormState extends State<CountryForm> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: const Text("Country Form"),
+        title: const Text("Update Country Form"),
       ),
       body: Center(
         child: Padding(
@@ -54,12 +55,13 @@ class _CountryFormState extends State<CountryForm> {
                       height: 15,
                     ),
                     TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter a name";
-                        }
-                        return null;
-                      },
+                      controller: _id,
+                      decoration: inputDecoration('id', 'Enter id'),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    TextFormField(
                       controller: _nameController,
                       decoration: inputDecoration('Name', 'Enter name'),
                     ),
@@ -67,12 +69,6 @@ class _CountryFormState extends State<CountryForm> {
                       height: 15,
                     ),
                     TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter Country code";
-                        }
-                        return null;
-                      },
                       controller: _countryCodeController,
                       decoration:
                           inputDecoration('Country Code', 'Enter country code'),
@@ -81,12 +77,6 @@ class _CountryFormState extends State<CountryForm> {
                       height: 15,
                     ),
                     TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter Capital city name";
-                        }
-                        return null;
-                      },
                       controller: _capitalController,
                       decoration:
                           inputDecoration('Capital', 'Enter capital city name'),
@@ -95,12 +85,6 @@ class _CountryFormState extends State<CountryForm> {
                       height: 15,
                     ),
                     TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter Currency symbol";
-                        }
-                        return null;
-                      },
                       controller: _currencyController,
                       decoration:
                           inputDecoration('Currency', 'Enter currency symbol'),
@@ -109,12 +93,6 @@ class _CountryFormState extends State<CountryForm> {
                       height: 15,
                     ),
                     TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter Phone code";
-                        }
-                        return null;
-                      },
                       keyboardType: TextInputType.number,
                       controller: _phoneCodeController,
                       decoration:
@@ -124,12 +102,6 @@ class _CountryFormState extends State<CountryForm> {
                       height: 15,
                     ),
                     TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter Latitude";
-                        }
-                        return null;
-                      },
                       keyboardType: TextInputType.number,
                       controller: _latitudeController,
                       decoration: inputDecoration(
@@ -139,12 +111,6 @@ class _CountryFormState extends State<CountryForm> {
                       height: 15,
                     ),
                     TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter Longitude";
-                        }
-                        return null;
-                      },
                       keyboardType: TextInputType.number,
                       controller: _longitudeController,
                       decoration: inputDecoration(
@@ -157,34 +123,33 @@ class _CountryFormState extends State<CountryForm> {
                       color: Colors.red,
                       minWidth: 160,
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // If the form is valid, display a snackbar. In the real world,
-                          // you'd often call a server or save the information in a database.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
+                        // If the form is valid, display a snackbar. In the real world,
+                        // you'd often call a server or save the information in a database.
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
 
-                          // create country model
-                          final Country country = Country(
-                            Name: _nameController.text,
-                            Capital: _capitalController.text,
-                            CountryCode:
-                                int.tryParse(_countryCodeController.text),
-                            Currency: _currencyController.text,
-                            PhoneCode: int.tryParse(_phoneCodeController.text),
-                            Latitude: _latitudeController.text,
-                            Longitude: _longitudeController.text,
-                          );
-                          // add country to provider state management
-                          Provider.of<CountryProvider>(context, listen: false)
-                              .addCountry(country)
-                              .then((Country newCountry) {
-                            Navigator.pop(context);
-                          });
-                        }
+                        // update country model
+                        final Country updatecountry = Country(
+                          Id: int.tryParse(_id.text),
+                          Name: _nameController.text,
+                          Capital: _capitalController.text,
+                          CountryCode:
+                              int.tryParse(_countryCodeController.text),
+                          Currency: _currencyController.text,
+                          PhoneCode: int.tryParse(_phoneCodeController.text),
+                          Latitude: double.tryParse(_latitudeController.text),
+                          Longitude: double.tryParse(_longitudeController.text),
+                        );
+                        // update country to provider state management
+                        Provider.of<CountryProvider>(context, listen: false)
+                            .updateCountry(updatecountry)
+                            .then((Country updatedCountry) {
+                          Navigator.pop(context);
+                        });
                       },
                       child: Text(
-                        'Save',
+                        'Update',
                         style: textstyle,
                       ),
                     ),

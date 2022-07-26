@@ -17,12 +17,13 @@ class CountriesService {
     // result
     final QueryResult result = await _client!.query(options);
     if (result.hasException) {
-      throw new Exception(result.exception.toString());
+      throw Exception(result.exception.toString());
     }
 
     final countries = result.data!['country'];
 
-    List<Country> _countryList =  (countries as List).map((json) => Country.fromJson(json)).toList();
+    List<Country> _countryList =
+        (countries as List).map((json) => Country.fromJson(json)).toList();
     // map to country model
     // final List<Country> countryList = countries.map((country) => Country.fromJson(country)).toList();
 
@@ -49,7 +50,7 @@ class CountriesService {
     // result
     final QueryResult result = await _client!.mutate(options);
     if (result.hasException) {
-      throw new Exception(result.exception.toString());
+      throw Exception(result.exception.toString());
     }
     // map to country model
     final Country newCountry =
@@ -77,7 +78,7 @@ class CountriesService {
     // result
     final QueryResult result = await _client!.mutate(options);
     if (result.hasException) {
-      throw new Exception(result.exception.toString());
+      throw Exception(result.exception.toString());
     }
     // map to country model
     final Country updatedCountry =

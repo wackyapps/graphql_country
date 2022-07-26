@@ -22,7 +22,9 @@ class CountryProvider extends ChangeNotifier {
 
   // country list
   List<Country> _countries = <Country>[];
+  // getter
   List<Country> get countries => _countries;
+  // setter
   set countries(List<Country> value) {
     _countries = value;
     notifyListeners();
@@ -55,5 +57,15 @@ class CountryProvider extends ChangeNotifier {
         await _countriesService!.deleteCountry(_removedCountry);
     notifyListeners();
     return _deletedCountry;
+  }
+
+  // updateCountry
+  Future<Country> updateCountry(Country country) async {
+    // update country from list
+    Country _updateCountry = await _countriesService!.updateCountry(country);
+    // update country to list
+    //add(_updateCountry);
+    notifyListeners();
+    return _updateCountry;
   }
 }
