@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:maqqi/model/country/country.dart';
 import 'package:maqqi/services/graphql_service/graphql_client.dart';
@@ -21,12 +20,16 @@ class CountriesService {
     }
 
     final countries = result.data!['country'];
+<<<<<<< HEAD
 
     List<Country> _countryList =
         (countries as List).map((json) => Country.fromJson(json)).toList();
     // map to country model
     // final List<Country> countryList = countries.map((country) => Country.fromJson(country)).toList();
 
+=======
+    List<Country> _countryList =  (countries as List).map((json) => Country.fromJson(json)).toList();
+>>>>>>> Updating for subscripton in Country Services
     // return country list
     return _countryList;
   }
