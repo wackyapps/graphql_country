@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:maqqi/model/country/country.dart';
 import 'package:maqqi/provider/country_provider/country_provider.dart';
 import 'package:maqqi/screens/countries/country_form.dart';
-import 'package:maqqi/screens/countries/updateCountries.dart';
+import 'package:maqqi/screens/countries/widgets/country_error.dart';
+import 'package:maqqi/screens/countries/widgets/country_list_view.dart';
+import 'package:maqqi/services/graphql_service/countries_service/graphql/queries/country_queries.dart';
+import 'package:maqqi/services/graphql_service/graphql_client.dart';
 import 'package:provider/provider.dart';
 
 class CountriesList extends StatelessWidget {
@@ -10,53 +16,57 @@ class CountriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // call provider to get the countries list
-    final countriesModel = Provider.of<CountryProvider>(context, listen: true);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: const Text("Countries"),
-      ),
-      body: ListView.builder(
-        itemCount: countriesModel.countries.length,
-        itemBuilder: (context, index) {
-          return Consumer<CountryProvider>(builder: (context, model, child) {
-            return ListTile(
-              title: Text(
-                  ", ${model.countries[index].Capital}, ${model.countries[index].Currency}"),
-              subtitle: Text(
-                  "${model.countries[index].PhoneCode} ${model.countries[index].Longitude}, ${model.countries[index].Latitude}"),
-              leading: IconButton(
-                icon: const Icon(Icons.delete_forever, color: Colors.red),
-                onPressed: () {
-                  // alert dialog
-                  showDeleteDialog(context, index);
-                },
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.edit, color: Colors.blue),
-                onPressed: () {
-                  // show updation country form
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const updateCountry();
-                  }));
-                },
-              ),
-            );
-          });
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          // show country form
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const CountryForm();
-          }));
-        },
+    return GraphQLProvider(
+      client: Config.initializeSubscriptionClient("hello"),
+      child: CacheProvider(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.red,
+            title: const Text("Countries"),
+          ),
+          body: Subscription(
+            options: SubscriptionOptions(
+              document: gql(getCountryBySubscription),
+            ),
+            builder: (result) => result.isLoading
+                ? const Center(
+                    child: Text(
+                    'Loading...',
+                    style: TextStyle(fontSize: 20),
+                  ))
+                : result.hasException
+                    ? GraphQLErrorMessage(
+                        graphqlError: result.exception.toString())
+                    : CountriesListView(
+                        countries: getCountriesFromResult(result),
+                        resultObject: result,
+                      ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.red,
+            child: const Icon(Icons.add),
+            onPressed: () {
+              // show country form
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const CountryForm();
+                  },
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
+  }
+
+  List<Country> getCountriesFromResult(QueryResult<Object?> resultObject) {
+    final List<Object?> countries = resultObject.data!['country'];
+    return countries.map((country) {
+      return Country.fromJson(json.decode(json.encode(country)));
+    }).toList();
   }
 
   showDeleteDialog(BuildContext context, int index) {

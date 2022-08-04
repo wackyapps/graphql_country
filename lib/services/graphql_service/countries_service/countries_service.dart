@@ -20,16 +20,24 @@ class CountriesService {
     }
 
     final countries = result.data!['country'];
-<<<<<<< HEAD
-
-    List<Country> _countryList =
-        (countries as List).map((json) => Country.fromJson(json)).toList();
-    // map to country model
-    // final List<Country> countryList = countries.map((country) => Country.fromJson(country)).toList();
-
-=======
     List<Country> _countryList =  (countries as List).map((json) => Country.fromJson(json)).toList();
->>>>>>> Updating for subscripton in Country Services
+    // return country list
+    return _countryList;
+  }
+
+  // get all countries
+  Future<List<Country>> getCountriesSubscription() async {
+    _client = await Config.initializeClient("hello");
+    // query option to get all countries
+    final QueryOptions options = QueryOptions(document: gql(getAllCountries));
+    // result
+    final QueryResult result = await _client!.query(options);
+    if (result.hasException) {
+      throw Exception(result.exception.toString());
+    }
+
+    final countries = result.data!['country'];
+    List<Country> _countryList =  (countries as List).map((json) => Country.fromJson(json)).toList();
     // return country list
     return _countryList;
   }

@@ -4,17 +4,17 @@ import 'package:maqqi/screens/countries/countries.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
+  runApp(const CountriesDemoApp());
 // You can wrap multiple providers in a list.
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => CountryProvider(),
-        ),
-      ],
-      child: const CountriesDemoApp(),
-    ),
-  );
+  // MultiProvider(
+  //   providers: [
+  //     ChangeNotifierProvider(
+  //       create: (context) => CountryProvider(),
+  //     ),
+  //   ],
+  //   child: const CountriesDemoApp(),
+  // ),
+  // );
 }
 
 class CountriesDemoApp extends StatelessWidget {

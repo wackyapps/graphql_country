@@ -27,3 +27,17 @@ query getCountryById($id: Int!) {
   }
 }
 ''';
+
+const String getCountryBySubscription =
+    r'''subscription getCountryBySubscription{
+  country{
+    id
+    name
+    capital
+    country_code
+    currency
+    phone_code
+    latitude
+    longitude
+  }
+}''';
