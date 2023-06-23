@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class Config {
   static final HttpLink httpLink =
-      HttpLink("https://maqqi.hasura.app/v1/graphql");
+      HttpLink("https://YOUR_GRAPH_QL_URL_HERE");
   static String? _token;
   static final AuthLink authLink = AuthLink(
     getToken: () => _token,
   );
 
   static final WebSocketLink webSocketLink = WebSocketLink(
-    "ws://maqqi.hasura.app/v1/graphql",
+    "ws://YOUR_GRAPH_QL_URL_HERE",
     config: SocketClientConfig(
       autoReconnect: true,
       inactivityTimeout: Duration(seconds: 30),
